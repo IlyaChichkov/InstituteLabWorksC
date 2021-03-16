@@ -1,5 +1,6 @@
 # InstituteLabWorksC
 Laboratory Programs On C Language
 
-Note: you can add all laboratory work to one solution
+📌 Note: Just knew some nice tip - you can add all projects to one solution
+
 ![alt text](Media/SeveralProjectsInOneSolution.png)
