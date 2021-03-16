@@ -2,4 +2,4 @@
 Laboratory Programs On C Language
 
 Note: you can add all laboratory work to one solution
-![alt text](media/SeveralProjectsInOneSolution.png)
+![alt text](Media/SeveralProjectsInOneSolution.png)
