@@ -7,9 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstituteLabWorksC", "Insti
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab2", "..\Lab2\Lab2\Lab2.vcxproj", "{B535AFD0-660C-4060-96DC-5D8D6BDFA677}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab3", "..\Lab3\Lab3\Lab3.vcxproj", "{F4DCC5DE-AA35-4977-9974-5BA67BB39487}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab3", "Lab3\Lab3.vcxproj", "{F4DCC5DE-AA35-4977-9974-5BA67BB39487}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab4", "..\Lab4\Lab4\Lab4.vcxproj", "{A1C80307-B571-43B7-B929-3409CA1FFD1F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab4", "Lab4\Lab4.vcxproj", "{A1C80307-B571-43B7-B929-3409CA1FFD1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
