@@ -8,86 +8,131 @@
 
 using namespace std;
 
-const int N = 9;
+HANDLE hConsole1 = GetStdHandle(STD_OUTPUT_HANDLE);
 
-int GetZeroCountInLine(int lineID, double arr[N][N], int length) {
-	int count = 0;
-	for (int j = 0; j < length; j++)
+const int N = 8;
+
+int* GetOddColumnSum(int arr[][N], int arrLength) {
+	const int b = N / 2;
+	static int oddSumArr[b] = {};
+	int oddArrIndex = 0;
+	for (int i = 0; i < arrLength; i++)
 	{
-		if (lineID + j < length && lineID < j + 1) {
-
-			if (arr[lineID][j] == 0) {
-				count++;
-			}
-		}
-		else if (lineID + j > length - 2 && lineID > j - 1)
+		for (int j = 0; j < arrLength; j++)
 		{
-			if (arr[lineID][j] == 0) {
-				count++;
+			if (i % 2 != 0) {
+				oddSumArr[oddArrIndex] += arr[j][i];
+
+				if (j + 1 >= arrLength) {
+
+					oddArrIndex++;
+				}
 			}
 		}
 	}
-	return count;
+	return oddSumArr;
+}
+
+void SetRandomMultiArray1(int arr[][N], int arrLength) {
+	for (int i = 0; i < arrLength; i++)
+	{
+		for (int j = 0; j < arrLength; j++)
+		{
+			arr[i][j] = rand() % 201 - 100;
+		}
+	}
+}
+
+void ShowMultiArray1(int arr[][N], int arrLength) {
+	for (int i = 0; i < arrLength; i++)
+	{
+		for (int j = 0; j < arrLength; j++)
+		{
+			// check to get form
+			if (i > j - 1) {
+				printf("%6d", arr[i][j]);
+			}
+			else {
+				printf("%6d", arr[i][j]);
+			}
+		}
+		printf("\n");
+	}
+}
+
+void ShowArray(int *arr, int arrLength) {
+	for (int i = 0; i < arrLength; i++)
+	{
+		printf("%5d", arr[i]);
+	}
+}
+
+void ShowMultiArrayColored(int arr[][N], int arrLength) {
+	for (int i = 0; i < arrLength; i++)
+	{
+		for (int j = 0; j < arrLength; j++)
+		{
+			// check to get form
+			if (i > j - 1) {
+				SetConsoleTextAttribute(hConsole1, 14);
+				printf("%6d", arr[i][j]);
+			}
+			else {
+				SetConsoleTextAttribute(hConsole1, 12);
+				printf("%6d", arr[i][j]);
+			}
+		}
+		printf("\n");
+	}
+	SetConsoleTextAttribute(hConsole1, 7);
+}
+
+int* GetFigureMaxAndMin(int arr[][N], int arrLength) {
+	int max = INT_MIN;
+	int min = INT_MAX;
+	
+	for (int i = 0; i < arrLength; i++)
+	{
+		for (int j = 0; j < arrLength; j++)
+		{
+			// check to get form
+			if (i > j - 1) {
+				if (arr[i][j] > max) {
+					max = arr[i][j];
+				}
+
+				if (arr[i][j] < min) {
+					min = arr[i][j];
+				}
+			}
+		}
+	}
+
+	static int maxAndMinArray[2] = { max, min };
+	return maxAndMinArray;
 }
 
 void Exercise2() {
 
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	double squareArray[N][N];
+	cout << "А)\n";
+	int squareArray[N][N];
 
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
-			squareArray[i][j] = rand() % 100 - 50;
-			if (squareArray[i][j] < -35) {
-				squareArray[i][j] = 0;
-			}
-		}
+	SetRandomMultiArray1(squareArray, N);
+	ShowMultiArray1(squareArray, N);
+
+	int *arr;
+	arr = GetOddColumnSum(squareArray, N);
+	
+	for (int i = 0; i < N / 2; i++) {
+		printf("%s %d %s %4d %s", "Сумма ", i, " столбца: ", arr[i], "\n");
 	}
 
-	SetConsoleTextAttribute(hConsole, 7);
-	for (int i = 0; i < N; i++) // вывод массива
-	{
-		cout << endl << i << ":  ";
-		for (int j = 0; j < N; j++)
-		{
-			bool zerovalue = false;
-			if (squareArray[i][j] == 0) {
-				zerovalue = true;
-			}
+	cout << "\n Б) Дана целочисленная матрица NxN. Создать функцию, которая возвращает 2 значения: минимум и максимум заштрихованной области. \n";
 
-			if (zerovalue) {
-				SetConsoleTextAttribute(hConsole, 14);
-			}
-			else {
-				SetConsoleTextAttribute(hConsole, 12);
-			}
+	SetRandomMultiArray1(squareArray, N);
+	ShowMultiArrayColored(squareArray, N);
 
-			if (i + j < N && i < j + 1) {
-				
-				cout << setw(6) << setprecision(3) << squareArray[i][j] << ' ';
-			}
-			else if (i + j > N - 2 && i > j - 1)
-			{
-				cout << setw(6) << setprecision(3) << squareArray[i][j] << ' ';
-			}
-			else {
-				SetConsoleTextAttribute(hConsole, 7);
-				cout << setw(6) << setprecision(3) << squareArray[i][j] << ' ';
-			}
-			SetConsoleTextAttribute(hConsole, 7);
-		}
-	}
-
-	cout << endl;
-	cout << endl;
-
-	for (int i = 0; i < N; i++)
-	{
-		cout << "Line " << i << " zero count: " << GetZeroCountInLine(i, squareArray, N) << endl;
-	}
-
-
-	cout << "\n";
+	arr = GetFigureMaxAndMin(squareArray, N);
+	printf("%s %4d %s", "MAX: ", arr[0], "\n");
+	printf("%s %4d %s", "MIN: ", arr[1], "\n");
 }
