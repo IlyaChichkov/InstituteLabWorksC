@@ -2,11 +2,12 @@
 //
 
 #include <iostream>
+#include "Exercise1.h"
 
-using namespace std;
 int main()
 {
-    cout << "Hello World!\n";
-    //lab 5
+
+    Exercise1();
+    
     return 0;
 }
