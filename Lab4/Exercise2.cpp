@@ -124,10 +124,10 @@ void Exercise2() {
 	arr = GetOddColumnSum(squareArray, N);
 	
 	for (int i = 0; i < N / 2; i++) {
-		printf("%s %d %s %4d %s", "Сумма ", i, " столбца: ", arr[i], "\n");
+		printf("%s %d %s %4d %s", "Сумма ", i+1, " столбца: ", arr[i], "\n");
 	}
 
-	cout << "\n Б) Дана целочисленная матрица NxN. Создать функцию, которая возвращает 2 значения: минимум и максимум заштрихованной области. \n";
+	cout << "\nБ) Дана целочисленная матрица NxN. Создать функцию, которая возвращает 2 значения: минимум и максимум заштрихованной области. \n";
 
 	SetRandomMultiArray1(squareArray, N);
 	ShowMultiArrayColored(squareArray, N);

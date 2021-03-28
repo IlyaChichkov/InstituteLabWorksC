@@ -70,15 +70,18 @@ void PointA() {
 
 	int* maxElementIndex_B = GetFirstMaxElementIndex(B, N2);
 	int Index_B = *maxElementIndex_B;
-	cout << "\nИндекс первого max элемента: " << Index_B << "\n";
+
+	printf("%s%d%s","\nИндекс первого max элемента: ", Index_B, "\n"); 
+
+	//printf("%s%d%s%d","A:",Index_A," compare to B:",Index_B); // DEBUG
 
 	if (Index_A < Index_B) {
 		printf("\nМаксимум в массиве А ближе к началу\n");
-	}
+	}else
 	if (Index_A > Index_B) {
 		printf("\nМаксимум в массиве B ближе к началу\n");
 	}
-	else {
+	else{
 		printf("\nМаксимумы равноудалены от начала массивов\n");
 	}
 }
