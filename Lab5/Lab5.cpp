@@ -7,10 +7,6 @@ using namespace std;
 int main()
 {
     cout << "Hello World!\n";
-    int a = 0;
-    scanf_s("%d", &a);
-    printf("%d %s %s", a, "-", "a");
-    cin >> a;
-    cout << "Hello World!\n";
+    //lab 5
     return 0;
 }
