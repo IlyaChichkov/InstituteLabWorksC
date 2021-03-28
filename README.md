@@ -1,5 +1,5 @@
 # InstituteLabWorksC
-Laboratory Programs On C Language
+Laboratory Programs On C Language (! 16 variant)
 
 📌 Note: Just now got some nice tip - you can add all projects to one solution
 
