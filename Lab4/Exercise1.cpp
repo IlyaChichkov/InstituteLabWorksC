@@ -9,7 +9,7 @@
 using namespace std;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-const int N = 8;
+const int N = 8; // размер матрицы (для пункта Б)
 
 int* GetFirstMaxElementIndex(double *arr, int arrLength) { // находим индекс первого max элемента
 	double maxValue = DBL_MIN;
@@ -50,11 +50,12 @@ void ShowArray(double *arr, int arrLength) {
 }
 
 void PointA() {
-	const int N1 = 6, N2 = 8;
-	double A[N1], B[N2];
+	const int N1 = 6, N2 = 8; // размеры матриц
+	double A[N1], B[N2]; // создаем матрицу
 
 	srand(time(NULL));
 
+	// присваиваем рандомное значение, отображаем в консоле
 	SetRandomArray(A, N1);
 	cout << "\nМассив А\n";
 	ShowArray(A, N1);
@@ -101,7 +102,7 @@ void ShowMultiArray(int arr[][N], int arrLength) {
 	{
 		for (int j = 0; j < arrLength; j++)
 		{
-			// check to get form
+			// условие области
 			if (i > j-1) {
 				SetConsoleTextAttribute(hConsole, 14);
 				printf("%6d", arr[i][j]);
@@ -116,13 +117,13 @@ void ShowMultiArray(int arr[][N], int arrLength) {
 	SetConsoleTextAttribute(hConsole, 7);
 }
 
-int GetFormElementsSum(int arr[][N], int arrLength) {
+int GetFormElementsSum(int arr[][N], int arrLength) { // сумма элементов в области массива
 	int sum = 0;
 	for (int i = 0; i < arrLength; i++)
 	{
 		for (int j = 0; j < arrLength; j++)
 		{
-			// check to get form
+			// условие области
 			if (i > j - 1) {
 				sum += arr[i][j];
 			}
@@ -135,6 +136,7 @@ void PointB() {
 	int arr[N][N];
 
 	printf("\nДана целочисленная матрица 8x8. Создать функцию для  нахождения суммы элементов в заштрихованной области\n");
+	// присваиваем рандомное значение, отображаем в консоле
 	SetRandomMultiArray(arr, N);
 	ShowMultiArray(arr, N);
 	printf("%d %s",GetFormElementsSum(arr, N), "\n");

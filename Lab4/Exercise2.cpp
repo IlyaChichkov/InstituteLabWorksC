@@ -12,7 +12,7 @@ HANDLE hConsole1 = GetStdHandle(STD_OUTPUT_HANDLE);
 
 const int N = 8;
 
-int* GetOddColumnSum(int arr[][N], int arrLength) {
+int* GetOddColumnSum(int arr[][N], int arrLength) { // сумма нечетных столбцов
 	const int b = N / 2;
 	static int oddSumArr[b] = {};
 	int oddArrIndex = 0;
@@ -33,7 +33,7 @@ int* GetOddColumnSum(int arr[][N], int arrLength) {
 	return oddSumArr;
 }
 
-void SetRandomMultiArray1(int arr[][N], int arrLength) {
+void SetRandomMultiArray1(int arr[][N], int arrLength) { // рандомный массив
 	for (int i = 0; i < arrLength; i++)
 	{
 		for (int j = 0; j < arrLength; j++)
@@ -43,6 +43,7 @@ void SetRandomMultiArray1(int arr[][N], int arrLength) {
 	}
 }
 
+/// <SHOW ARRAY FUNCTIONS>
 void ShowMultiArray1(int arr[][N], int arrLength) {
 	for (int i = 0; i < arrLength; i++)
 	{
@@ -86,8 +87,9 @@ void ShowMultiArrayColored(int arr[][N], int arrLength) {
 	}
 	SetConsoleTextAttribute(hConsole1, 7);
 }
+/// </SHOW ARRAY FUNCTIONS>
 
-int* GetFigureMaxAndMin(int arr[][N], int arrLength) {
+int* GetFigureMaxAndMin(int arr[][N], int arrLength) { // поиск MAX и MIN в областе массива
 	int max = INT_MIN;
 	int min = INT_MAX;
 	
@@ -95,7 +97,7 @@ int* GetFigureMaxAndMin(int arr[][N], int arrLength) {
 	{
 		for (int j = 0; j < arrLength; j++)
 		{
-			// check to get form
+			// условие области
 			if (i > j - 1) {
 				if (arr[i][j] > max) {
 					max = arr[i][j];
@@ -115,20 +117,21 @@ int* GetFigureMaxAndMin(int arr[][N], int arrLength) {
 void Exercise2() {
 
 	cout << "А)\n";
-	int squareArray[N][N];
+	int squareArray[N][N]; // создаем матрицу
 
+	// присваиваем рандомное значение, отображаем в консоле
 	SetRandomMultiArray1(squareArray, N);
 	ShowMultiArray1(squareArray, N);
 
 	int *arr;
-	arr = GetOddColumnSum(squareArray, N);
+	arr = GetOddColumnSum(squareArray, N); // получаем массив сум элементов нечетных столбцов
 	
 	for (int i = 0; i < N / 2; i++) {
 		printf("%s %d %s %4d %s", "Сумма ", i+1, " столбца: ", arr[i], "\n");
 	}
 
 	cout << "\nБ) Дана целочисленная матрица NxN. Создать функцию, которая возвращает 2 значения: минимум и максимум заштрихованной области. \n";
-
+	// присваиваем рандомное значение, отображаем в консоле
 	SetRandomMultiArray1(squareArray, N);
 	ShowMultiArrayColored(squareArray, N);
 
