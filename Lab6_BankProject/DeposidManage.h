@@ -6,8 +6,9 @@ typedef struct deposid {
 	double amount;
 } deposid;
 void AddNewClient();
-void ShowClientsList();
+void ShowAllClientsList();
 void ShowClientsListMoreMoneyThen(int minValue);
 void SearchClientsDeposits();
 void CreateStandartClients();
 void WriteDataToFile();
+void ApplicationExit();

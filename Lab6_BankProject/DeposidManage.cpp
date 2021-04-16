@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+п»ї#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <iostream>
 #include <iomanip>
@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// Структура Депозита
+// РЎС‚СЂСѓРєС‚СѓСЂР° Р”РµРїРѕР·РёС‚Р°
 typedef struct deposid {
 	int id;
 	char* surname;
@@ -16,12 +16,33 @@ typedef struct deposid {
 	double amount;
 } deposid;
 
+// РљРѕР»РёС‡РµСЃС‚РІРѕ РљР»РёРµРЅС‚РѕРІ Р’ РњР°СЃСЃРёРІРµ
 int clientsCount = 0;
-// Массив Клиентов
+// РњР°СЃСЃРёРІ РљР»РёРµРЅС‚РѕРІ
 deposid* clients = (deposid*)malloc(0 * sizeof(deposid));
 
+void ShowClientsList(struct deposid*, int, bool);
+
+void ShowClientsList(struct deposid* clientsList, int listCount, bool freeListAfterUse = true) {
+	// РІС‹РІРѕРґ С‚Р°Р±Р»РёС†С‹ РєР»РёРµРЅС‚РѕРІ
+	cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
+	cout << setw(6) << "в„–" << setw(10) << "РЎС‡РµС‚" << setw(15) << "РРјСЏ" << setw(15) << "Р¤Р°РјРёР»РёСЏ" << setw(15) << "РЎС‡РµС‚" << endl;
+	cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
+	int clientNum = 1;
+	cout << fixed;
+	cout << setprecision(2);
+	for (int i = 0; i < listCount; i++) {
+		cout << setw(6) << clientNum << setw(10) << clientsList[i].id << setw(15) << clientsList[i].name << setw(15) << clientsList[i].surname << setw(15) << clientsList[i].amount << endl;
+		clientNum++;
+	}
+	cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
+	if (freeListAfterUse) { // РµСЃР»Рё СЃРїРёСЃРѕРє РєР»РёРµРЅС‚РѕРІ РІСЂРµРјРµРЅРЅС‹Р№, С‡РёСЃС‚РёРј РїР°РјСЏС‚СЊ
+		free(clientsList);
+	}
+}
+
 void CreateStandartClients() {
-	// добавляем тестовых клиетов
+	// РґРѕР±Р°РІР»СЏРµРј С‚РµСЃС‚РѕРІС‹С… РєР»РёРµС‚РѕРІ
 	//1
 	deposid newClient = { 4616001, NULL, NULL, 8200 };
 	newClient.name = (char*)malloc(5 * sizeof(char));
@@ -76,6 +97,10 @@ void CreateStandartClients() {
 	clients[clientsCount - 1] = newClient;
 }
 
+void ApplicationExit() { // РїСЂРё Р·Р°РєСЂС‹С‚РёРё РїСЂРѕРіСЂР°РјРјС‹
+	free(clients); // РѕСЃРІРѕР±РѕР¶РґР°РµРј РїР°РјСЏС‚СЊ
+}
+
 void AddNewClient() {
 	bool addFinished = false;
 	while (!addFinished) {
@@ -83,44 +108,44 @@ void AddNewClient() {
 		deposid newClient = { 0, NULL, NULL, 0 };
 		newClient.id = clientsCount + 1 + ((rand() % 9000) * 1000);
 
-		cout << "Добавление нового клиента" << endl;
-		cout << "Введите имя:";
-		gets_s(buf); // Ввод в буфер
-		newClient.name = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // освобождение памяти для переменной
-		strcpy(newClient.name, buf); // копирование данных в элемент структуры
+		cout << "Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ РєР»РёРµРЅС‚Р°" << endl;
+		cout << "Р’РІРµРґРёС‚Рµ РёРјСЏ:";
+		gets_s(buf); // Р’РІРѕРґ РІ Р±СѓС„РµСЂ
+		newClient.name = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё РґР»СЏ РїРµСЂРµРјРµРЅРЅРѕР№
+		strcpy(newClient.name, buf); // РєРѕРїРёСЂРѕРІР°РЅРёРµ РґР°РЅРЅС‹С… РІ СЌР»РµРјРµРЅС‚ СЃС‚СЂСѓРєС‚СѓСЂС‹
 		newClient.name[(strlen(buf) + 1)] = '\0';
 
-		cout << "Введите фамилию:";
-		gets_s(buf); // Ввод в буфер
-		newClient.surname = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // освобождение памяти для переменной
-		strcpy(newClient.surname, buf); // копирование данных в элемент структуры
+		cout << "Р’РІРµРґРёС‚Рµ С„Р°РјРёР»РёСЋ:";
+		gets_s(buf); // Р’РІРѕРґ РІ Р±СѓС„РµСЂ
+		newClient.surname = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё РґР»СЏ РїРµСЂРµРјРµРЅРЅРѕР№
+		strcpy(newClient.surname, buf); // РєРѕРїРёСЂРѕРІР°РЅРёРµ РґР°РЅРЅС‹С… РІ СЌР»РµРјРµРЅС‚ СЃС‚СЂСѓРєС‚СѓСЂС‹
 		newClient.surname[(strlen(buf) + 1)] = '\0';
 
-		cout << "Введите начальный счет на депозите:";
+		cout << "Р’РІРµРґРёС‚Рµ РЅР°С‡Р°Р»СЊРЅС‹Р№ СЃС‡РµС‚ РЅР° РґРµРїРѕР·РёС‚Рµ:";
 		cin >> newClient.amount;
-		// выводим заполненные данные для проверки
-		cout << endl << "Новый пользователь" << endl;
+		// РІС‹РІРѕРґРёРј Р·Р°РїРѕР»РЅРµРЅРЅС‹Рµ РґР°РЅРЅС‹Рµ РґР»СЏ РїСЂРѕРІРµСЂРєРё
+		cout << endl << "РќРѕРІС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ" << endl;
 		cout << fixed;
 		cout << setprecision(2);
-		cout << setw(13) << left << "Номер счета:" << setw(15) << right << newClient.id << endl;
-		cout << setw(13) << left << "Имя:" << setw(15) << right << newClient.name << endl;
-		cout << setw(13) << left << "Фамилия:" << setw(15) << right << newClient.surname << endl;
-		cout << setw(13) << left << "Счет:" << setw(15) << right << newClient.amount << endl;
+		cout << setw(13) << left << "РќРѕРјРµСЂ СЃС‡РµС‚Р°:" << setw(15) << right << newClient.id << endl;
+		cout << setw(13) << left << "РРјСЏ:" << setw(15) << right << newClient.name << endl;
+		cout << setw(13) << left << "Р¤Р°РјРёР»РёСЏ:" << setw(15) << right << newClient.surname << endl;
+		cout << setw(13) << left << "РЎС‡РµС‚:" << setw(15) << right << newClient.amount << endl;
 		cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
-		// подтверждение действия
+		// РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РґРµР№СЃС‚РІРёСЏ
 		bool gotAns = false;
 		while (!gotAns) {
 			int ans = 0;
 			cout << endl;
-			cout << setfill(' ') << setw(30) << left << "Подтвердить" << setfill('.') << setw(8) << right << 1 << endl;
-			cout << setfill(' ') << setw(30) << left << "Подтвердить и добавить еще" << setfill('.') << setw(8) << right << 2 << endl;
-			cout << setfill(' ') << setw(30) << left << "Ввести заново" << setfill('.') << setw(8) << right << 3 << endl;
-			cout << setfill(' ') << setw(30) << left << "Назад" << setfill('.') << setw(8) << right << 4 << endl;
+			cout << setfill(' ') << setw(30) << left << "РџРѕРґС‚РІРµСЂРґРёС‚СЊ" << setfill('.') << setw(8) << right << 1 << endl;
+			cout << setfill(' ') << setw(30) << left << "РџРѕРґС‚РІРµСЂРґРёС‚СЊ Рё РґРѕР±Р°РІРёС‚СЊ РµС‰Рµ" << setfill('.') << setw(8) << right << 2 << endl;
+			cout << setfill(' ') << setw(30) << left << "Р’РІРµСЃС‚Рё Р·Р°РЅРѕРІРѕ" << setfill('.') << setw(8) << right << 3 << endl;
+			cout << setfill(' ') << setw(30) << left << "РќР°Р·Р°Рґ" << setfill('.') << setw(8) << right << 4 << endl;
 			cin >> ans; 
-			cin.clear(); // на случай, если предыдущий ввод завершился с ошибкой
+			cin.clear(); // РЅР° СЃР»СѓС‡Р°Р№, РµСЃР»Рё РїСЂРµРґС‹РґСѓС‰РёР№ РІРІРѕРґ Р·Р°РІРµСЂС€РёР»СЃСЏ СЃ РѕС€РёР±РєРѕР№
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			switch (ans) {
-			case 1: // Добавляем Клиента
+			case 1: // Р”РѕР±Р°РІР»СЏРµРј РљР»РёРµРЅС‚Р°
 				gotAns = true;
 				addFinished = true;
 				clientsCount++;
@@ -129,7 +154,7 @@ void AddNewClient() {
 				clients[clientsCount - 1] = newClient;
 				cout << endl;
 				break;
-			case 2: // Добавляем Клиента
+			case 2: // Р”РѕР±Р°РІР»СЏРµРј РљР»РёРµРЅС‚Р°
 				gotAns = true;
 				addFinished = true;
 				clientsCount++;
@@ -139,35 +164,34 @@ void AddNewClient() {
 				cout << endl;
 				AddNewClient();
 				break;
-			case 3: // Повтор Ввода
+			case 3: // РџРѕРІС‚РѕСЂ Р’РІРѕРґР°
 				gotAns = true;
 				break;
-			case 4: // Назад
+			case 4: // РќР°Р·Р°Рґ
 				gotAns = true;
 				addFinished = true;
 				break;
 			}
 		}
-
 	}
 }
 
 void WriteDataToFile() {
-	// Создание/открытие файла "examples.txt"
-	// Можно было использовать метод fopen
+	// РЎРѕР·РґР°РЅРёРµ/РѕС‚РєСЂС‹С‚РёРµ С„Р°Р№Р»Р° "examples.txt"
+	// РњРѕР¶РЅРѕ Р±С‹Р»Рѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РјРµС‚РѕРґ fopen
 	char buf[256];
 	char* fileName = NULL;
 
-	cout << "Введите имя файла:";
-	gets_s(buf); // Ввод в буфер
-	fileName = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // освобождение памяти для переменной
-	strcpy(fileName, buf); // копирование данных в элемент структуры
+	cout << "Р’РІРµРґРёС‚Рµ РёРјСЏ С„Р°Р№Р»Р°:";
+	gets_s(buf); // Р’РІРѕРґ РІ Р±СѓС„РµСЂ
+	fileName = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё РґР»СЏ РїРµСЂРµРјРµРЅРЅРѕР№
+	strcpy(fileName, buf); // РєРѕРїРёСЂРѕРІР°РЅРёРµ РґР°РЅРЅС‹С… РІ СЌР»РµРјРµРЅС‚ СЃС‚СЂСѓРєС‚СѓСЂС‹
 	fileName[(strlen(buf) + 1)] = '\0';
 
 	FILE* file = fopen(strcat(fileName, ".txt"), "w");
-	fprintf(file, "Экспорт данных клиентов\n");
-	fprintf(file, "№ Номер счета  Имя   Фамилия  Счет\n");
-	// Помещение данных
+	fprintf(file, "Р­РєСЃРїРѕСЂС‚ РґР°РЅРЅС‹С… РєР»РёРµРЅС‚РѕРІ\n");
+	fprintf(file, "в„– РќРѕРјРµСЂ СЃС‡РµС‚Р°  РРјСЏ   Р¤Р°РјРёР»РёСЏ  РЎС‡РµС‚\n");
+	// РџРѕРјРµС‰РµРЅРёРµ РґР°РЅРЅС‹С…
 	int listCount = 1;
 	for (int i = 0; i < clientsCount; i++) {
 		char data[256];
@@ -175,94 +199,55 @@ void WriteDataToFile() {
 		listCount++;
 		fprintf(file, data);
 	}
-	// Закрываем файл
+	// Р—Р°РєСЂС‹РІР°РµРј С„Р°Р№Р»
 	fclose(file);
 }
 
-void ShowClientsList() {
-	// вывод таблицы клиентов
-	cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
-	cout << setw(6) << "№" << setw(10) << "Счет" << setw(15) << "Имя" << setw(15) << "Фамилия" << setw(15) << "Счет" << endl;
-	cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
-	int listCount = 1;
-	for (int i = 0; i < clientsCount; i++) {
-		deposid client = { 0, NULL, NULL, 0 };
-		client = clients[i];
-		cout << fixed;
-		cout << setprecision(2);
-		cout << setw(6) << listCount << setw(10) << client.id << setw(15) << client.name << setw(15) << client.surname << setw(15) << client.amount << endl;
-		listCount++;
-	}
-	cout << setfill('-') << setw(60) << "-" << setfill(' ') << endl;
-}
-
-void ShowClientsList(deposid* clientsList) {
-	// вывод таблицы клиентов
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
-	cout << setw(6) << "№" << setw(10) << "Счет" << setw(15) << "Имя" << setw(15) << "Фамилия" << setw(15) << "Счет" << endl;
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
-	int listCount = 1;
-	for (int i = 0; i < clientsCount; i++) {
-		deposid client = { 0, NULL, NULL, 0 };
-		client = clients[i];
-		cout << fixed;
-		cout << setprecision(2);
-		cout << setw(6) << listCount << setw(10) << client.id << setw(15) << client.name << setw(15) << client.surname << setw(15) << client.amount << endl;
-		listCount++;
-	}
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
+void ShowAllClientsList() {
+	ShowClientsList(clients, clientsCount, false);
 }
 
 void ShowClientsListMoreMoneyThen(int minValue) {
-
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
-	cout << setw(6) << "№" << setw(10) << "Счет" << setw(15) << "Имя" << setw(15) << "Фамилия" << setw(15) << "Счет" << endl;
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
-	int listCount = 1;
+	int listCount = 0;
+	deposid* clientsList = (deposid*)malloc(listCount * sizeof(deposid));
 	for (int i = 0; i < clientsCount; i++) {
-		deposid client = { 0, NULL, NULL, 0 };
-		client = clients[i];
-		if (client.amount < minValue) {
+		if (clients[i].amount < minValue) {
 			continue;
 		}
-		cout << fixed;
-		cout << setprecision(2);
-		cout << setw(6) << listCount << setw(10) << client.id << setw(15) << client.name << setw(15) << client.surname << setw(15) << client.amount << endl;
 		listCount++;
+		clientsList = (deposid*)realloc(clientsList, listCount * sizeof(deposid));
+		clientsList[listCount - 1] = clients[i];
 	}
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
+	ShowClientsList(clientsList, listCount);
 }
 
 void SearchClientsDeposits() {
-	// Поиск счетов по имени и фамилии
+	// РџРѕРёСЃРє СЃС‡РµС‚РѕРІ РїРѕ РёРјРµРЅРё Рё С„Р°РјРёР»РёРё
 	char buf[256];
 	char* name = NULL;
 	char* surname = NULL;
 
-	cout << "Добавление нового клиента" << endl;
-	cout << "Введите имя:";
-	gets_s(buf); // Ввод в буфер
+	cout << "Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ РєР»РёРµРЅС‚Р°" << endl;
+	cout << "Р’РІРµРґРёС‚Рµ РёРјСЏ:";
+	gets_s(buf); // Р’РІРѕРґ РІ Р±СѓС„РµСЂ
 	cout << endl;
-	name = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // освобождение памяти для переменной
+	name = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё РґР»СЏ РїРµСЂРµРјРµРЅРЅРѕР№
 	strcpy(name, buf);
 
-	cout << "Введите фамилию:";
-	gets_s(buf); // Ввод в буфер
+	cout << "Р’РІРµРґРёС‚Рµ С„Р°РјРёР»РёСЋ:";
+	gets_s(buf); // Р’РІРѕРґ РІ Р±СѓС„РµСЂ
 	cout << endl;
-	surname = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // освобождение памяти для переменной
+	surname = (char*)malloc((strlen(buf) + 1) * sizeof(char)); // РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё РґР»СЏ РїРµСЂРµРјРµРЅРЅРѕР№
 	strcpy(surname, buf);
 
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
-	cout << setw(6) << "№" << setw(15) << "Счет" << setw(15) << "Имя" << setw(15) << "Фамилия" << setw(15) << "Счет" << endl;
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
-	int listCount = 1;
+	int listCount = 0;
+	deposid* clientsList = (deposid*)malloc(listCount * sizeof(deposid));
 	for (int i = 0; i < clientsCount; i++) {
 		if (strcmp(clients[i].name, name) == 0 && strcmp(clients[i].surname, surname) == 0) {
-			cout << fixed;
-			cout << setprecision(2);
-			cout << setw(6) << listCount << setw(15) << clients[i].id << setw(15) << clients[i].name << setw(15) << clients[i].surname << setw(15) << clients[i].amount << endl;
 			listCount++;
+			clientsList = (deposid*)realloc(clientsList, listCount * sizeof(deposid));
+			clientsList[listCount - 1] = clients[i];
 		}
 	}
-	cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
+	ShowClientsList(clientsList, listCount);
 }
