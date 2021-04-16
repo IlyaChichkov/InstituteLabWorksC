@@ -1,5 +1,4 @@
 ﻿// Lab5Example.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-/*
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -66,7 +65,7 @@ char** read_string(int& count) {
 	return text;
 }
 
-int main()
+int Example_main()
 {
 	char** tmp;
 	char** text = (char**)malloc(0 * sizeof(char*));
@@ -80,5 +79,3 @@ int main()
 	free(text);
 	return 0;
 }
-
-*/
