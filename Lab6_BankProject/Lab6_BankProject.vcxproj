@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2d672761-9178-42fb-8915-3058c9ef020c}</ProjectGuid>
-    <RootNamespace>Lab5</RootNamespace>
+    <ProjectGuid>{3bb5d5a2-3c87-4e26-bdf8-9de3d730987a}</ProjectGuid>
+    <RootNamespace>Lab6BankProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,12 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Exercise1.cpp" />
-    <ClCompile Include="Lab5.cpp" />
-    <ClCompile Include="Lab5Example.cpp" />
+    <ClCompile Include="DeposidManage.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Exercise1.h" />
+    <ClInclude Include="DeposidManage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
