@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DinamicArrayExample", "Dina
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab6_BankProject", "Lab6_BankProject\Lab6_BankProject.vcxproj", "{3BB5D5A2-3C87-4E26-BDF8-9DE3D730987A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab7_BankProjectFinish", "Lab7_BankProjectFinish\Lab7_BankProjectFinish.vcxproj", "{C1A76FE3-C05F-4023-9A29-D0B587CC339E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{3BB5D5A2-3C87-4E26-BDF8-9DE3D730987A}.Release|x64.Build.0 = Release|x64
 		{3BB5D5A2-3C87-4E26-BDF8-9DE3D730987A}.Release|x86.ActiveCfg = Release|Win32
 		{3BB5D5A2-3C87-4E26-BDF8-9DE3D730987A}.Release|x86.Build.0 = Release|Win32
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Debug|x64.ActiveCfg = Debug|x64
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Debug|x64.Build.0 = Debug|x64
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Debug|x86.ActiveCfg = Debug|Win32
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Debug|x86.Build.0 = Debug|Win32
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Release|x64.ActiveCfg = Release|x64
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Release|x64.Build.0 = Release|x64
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Release|x86.ActiveCfg = Release|Win32
+		{C1A76FE3-C05F-4023-9A29-D0B587CC339E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
