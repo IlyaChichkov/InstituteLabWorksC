@@ -15,11 +15,13 @@ void CreateStandartClients();
 int LoadData();
 void SaveData();
 
+// Фамилия Имя
 typedef struct fio {
 	char* surname;
 	char* name;
 } fio;
 
+// Дата
 typedef struct date {
 	int day;
 	char* month;
@@ -56,7 +58,7 @@ int FileExist(const char* fname)
 void DataFileExist()
 {
 	if (FileExist(saveName) == 1) { // если мы нашли данные
-		cout << "da";
+		cout << "Найден файл сохранения" << endl;
 		LoadData();
 	}
 	else {
@@ -84,10 +86,9 @@ void DataFileExist()
 	}
 }
 
+// Загружаем данные
 int LoadData() {
-	char symbol = ' ';
-	int dataLine = 0;
-	int dataWord = 0;
+	char buf[255];
 	FILE* file = fopen(saveName, "r");
 
 	if (file == NULL) {
@@ -95,35 +96,69 @@ int LoadData() {
 		return 0;
 	}
 
-	do
-	{
-		symbol = fgetc(file);
-		if (symbol == ';') {
-			dataLine++;
-			dataWord = 0;
-		}
-		if (dataLine > 0) {
-			
-			if (symbol == '_') {
-				dataWord++;
-			}
-			else {
-				switch (dataWord)
-				{
-				case 0:
-					break;
-				case 1:
-					break;
-				}
-			}
-		}
+	deposid loadClient = { 0, NULL, NULL, 0 };
 
-	} while (symbol != EOF); // пока не конец файла
-	cout << dataLine;
+	while (!feof(file)) {
+		fgets(buf, 255, file);
+		char *loadData = strtok(buf, "_");
+		int dataType = 0;
+		while (loadData != NULL)
+		{
+			switch (dataType)
+			{
+			case 1: // UID
+				loadClient.id = strtol(loadData, NULL, 0);
+				cout << loadClient.id << endl;
+				break;
+			case 2: // Name
+				loadClient.userFIO.name = (char*)malloc((strlen(loadData) + 1) * sizeof(char));
+				loadClient.userFIO.name[(strlen(buf) + 1)] = '\0';
+				loadClient.userFIO.name = loadData;
+				cout << loadClient.userFIO.name << endl;
+				break;
+			case 3: // Surname
+				loadClient.userFIO.surname = (char*)malloc((strlen(loadData) + 1) * sizeof(char));
+				loadClient.userFIO.surname[(strlen(buf) + 1)] = '\0';
+				loadClient.userFIO.surname = loadData;
+				cout << loadClient.userFIO.surname << endl;
+				break;
+			case 4: // Money
+				loadClient.amount = (double)strtol(loadData, NULL, 0);
+				cout << loadClient.amount << endl;
+				break;
+			case 5: // Day
+				loadClient.registerDate.day = (double)strtol(loadData, NULL, 0);
+				cout << loadClient.registerDate.day << endl;
+				break;
+			case 6: // Month
+				loadClient.registerDate.month = (char*)malloc((strlen(loadData) + 1) * sizeof(char));
+				loadClient.registerDate.month[(strlen(buf) + 1)] = '\0';
+				loadClient.registerDate.month = loadData;
+				cout << loadClient.registerDate.month << endl;
+				break;
+			case 7: // Year
+				loadClient.registerDate.year = (double)strtol(loadData, NULL, 0);
+				cout << loadClient.registerDate.year << endl;
+				break;
+			}
+
+			dataType++;
+			loadData = strtok(NULL, "_");
+		} // line have read
+
+		if (loadClient.id != 0) {
+
+			AddClientToList(loadClient);
+			loadClient = { 0, NULL, NULL, 0 };
+		}
+	} // file ENDs
+
 	fclose(file);
+	cout << "1" << clients[clientsCount - 1].userFIO.name << endl;
 	return 1;
 }
 
+// Сохраняем данные
 void SaveData() {
 
 	FILE* file = fopen(saveName, "w");
@@ -150,20 +185,21 @@ void ShowClientsList(struct deposid* clientsList, int listCount, bool freeListAf
 	int clientNum = 1;
 	cout << fixed;
 	cout << setprecision(2);
-	for (int i = 0; i < listCount; i++) {
-		char date[20];
+	int i;
+	for (i = 0; i < listCount; i++) {
+		char date[50];
 		sprintf(date, "%d %s %d", clientsList[i].registerDate.day, clientsList[i].registerDate.month, clientsList[i].registerDate.year);
 		cout << setw(6) << clientNum << setw(10) << clientsList[i].id << setw(15) << clientsList[i].userFIO.name << setw(15) << clientsList[i].userFIO.surname << setw(15) << clientsList[i].amount << setw(20) << date << endl;
 		clientNum++;
 	}
 	cout << setfill('-') << setw(tableWidth) << "-" << setfill(' ') << endl;
-	if (freeListAfterUse) { // если список клиентов временный, чистим память
+	if (freeListAfterUse) { // если список клиентов временный (не глобальный список), чистим память
 		free(clientsList);
 	}
 }
 
+// добавляем тестовых клиетов
 void CreateStandartClients() {
-	// добавляем тестовых клиетов
 	//1
 	deposid newClient = { 4616001, NULL, NULL, 8200 };
 	newClient.amount = 8200;
@@ -181,9 +217,7 @@ void CreateStandartClients() {
 	regDate.month[6] = '\0';
 	newClient.registerDate = regDate;
 
-	clientsCount++;
-	clients = (deposid*)realloc(clients, clientsCount * sizeof(deposid));
-	clients[clientsCount - 1] = newClient;
+	AddClientToList(newClient);
 	//2
 	newClient = { 7545002, NULL, NULL, 10400 };
 	newClient.amount = 10400;
@@ -201,9 +235,7 @@ void CreateStandartClients() {
 	regDate.month[6] = '\0';
 	newClient.registerDate = regDate;
 
-	clientsCount++;
-	clients = (deposid*)realloc(clients, clientsCount * sizeof(deposid));
-	clients[clientsCount - 1] = newClient;
+	AddClientToList(newClient);
 	//3
 	newClient = { 4986003, NULL, NULL, 12000 };
 	newClient.amount = 12000;
@@ -221,9 +253,7 @@ void CreateStandartClients() {
 	regDate.month[5] = '\0';
 	newClient.registerDate = regDate;
 
-	clientsCount++;
-	clients = (deposid*)realloc(clients, clientsCount * sizeof(deposid));
-	clients[clientsCount - 1] = newClient;
+	AddClientToList(newClient);
 	//4
 	newClient = { 6478004, NULL, NULL, 4350 };
 	newClient.amount = 4350;
@@ -241,17 +271,17 @@ void CreateStandartClients() {
 	regDate.month[6] = '\0';
 	newClient.registerDate = regDate;
 
-	clientsCount++;
-	clients = (deposid*)realloc(clients, clientsCount * sizeof(deposid));
-	clients[clientsCount - 1] = newClient;
+	AddClientToList(newClient);
 
 }
 
-void ApplicationExit() { // при закрытии программы
+// при закрытии программы
+void ApplicationExit() {
 	SaveData();
 	free(clients); // освобождаем память
 }
 
+// добавление нового пользователя
 void AddNewClient() {
 	bool addFinished = false;
 	while (!addFinished) {
@@ -442,6 +472,12 @@ void AddClientToList(deposid client) {
 	clients[clientsCount - 1] = client;
 }
 
+void Some() {
+
+	cout << "CHECK" << endl;
+	cout << clients[1].userFIO.name << endl;
+}
+
 void WriteDataToFile() {
 	// Создание/открытие файла "examples.txt"
 	// Можно было использовать метод fopen
@@ -517,3 +553,66 @@ void SearchClientsDeposits() {
 	}
 	ShowClientsList(clientsList, listCount);
 }
+
+/*
+
+// Загружаем данные
+int LoadData() {
+	char symbol = ' ';
+	int dataLine = 0;
+	int dataWord = 0;
+	int dataLetter = 0;
+	FILE* file = fopen(saveName, "r");
+
+	if (file == NULL) {
+
+		return 0;
+	}
+
+	deposid loadClient = { 0, NULL, NULL, 0 };
+	char* loadData = (char*)malloc(0 * sizeof(char));
+
+	do
+	{
+		symbol = fgetc(file);
+
+		if (symbol == ';') {
+			dataLine++; // переходим к строчке следующего пользователя
+			AddClientToList(loadClient);
+			// запись нового пользователя
+			loadClient = { 0, NULL, NULL, 0 };
+			dataWord = 0; // запись начальных данных
+			continue;
+		}
+		if (symbol == '_') {
+			for (int i = 0; i < dataLetter; i++) {
+
+			}
+
+			switch (dataWord) {
+			case 1:
+
+				cout << "DATA: " << loadData << endl;
+				loadClient.id = strtol(loadData, NULL, 10);
+				cout << "DATA: " << loadClient.id << endl;
+				break;
+			}
+
+			free(loadData);
+			dataWord++;
+		}
+		else {
+			dataLetter++;
+			loadData = (char*)malloc(dataLetter * sizeof(char));
+
+		}
+
+	} while (symbol != EOF); // пока не конец файла
+
+	cout << endl << dataLine << endl;
+	fclose(file);
+	cout <<  endl;
+	return 1;
+}
+
+*/

@@ -13,3 +13,5 @@ void CreateStandartClients();
 void WriteDataToFile();
 void ApplicationExit();
 int LoadData();
+void DataFileExist();
+void Some();

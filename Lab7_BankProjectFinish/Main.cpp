@@ -68,9 +68,10 @@ int MainMenu() {
 
 int main() {
 	srand(time(NULL));
-	setlocale(0, "Russian");
+	setlocale(LC_ALL, "Russian");
 
-	LoadData();
+	DataFileExist();
+	Some();
 	MainMenu();
 	ApplicationExit();
 	return 0;
