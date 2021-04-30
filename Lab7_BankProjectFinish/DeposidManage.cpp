@@ -8,25 +8,30 @@
 
 using namespace std;
 
+//***инициализация функций***
 void AddNewClient();
 void ShowClientsList(struct deposid*, int, bool);
 void AddClientToList(deposid);
 void CreateStandartClients();
 int LoadData();
 void SaveData();
+int GetMonthNumber(char*);
+char* GetMonthString(int);
+deposid* ListAdd(deposid*, int&, deposid&);
+//***инициализация функций***
 
-// Фамилия Имя
+// Структура Фамилии и Имени
 typedef struct fio {
 	char* surname;
 	char* name;
 } fio;
 
-// Дата
+// Структура Даты
 typedef struct date {
 	int day;
 	char* month;
 	int year;
-} date;
+} regDate;
 
 // Структура Депозита
 typedef struct deposid {
@@ -36,13 +41,14 @@ typedef struct deposid {
 	double amount;
 } deposid;
 
-// Количество Клиентов В Массиве
+//(!)// Количество Клиентов В Массиве
 int clientsCount = 0;
-// Массив Клиентов
+//(!)// Массив Клиентов
 deposid* clients = (deposid*)malloc(0 * sizeof(deposid));
 
-char saveName[] = { "data.txt" };
+char saveName[] = { "data.txt" }; // файл сохранения
 
+// проверка существования файла
 int FileExist(const char* fname)
 {
 	FILE* file = fopen(fname, "r");
@@ -55,7 +61,8 @@ int FileExist(const char* fname)
 	return 1;
 }
 
-void DataFileExist()
+// проверка на файл сохранения
+void CheckSavedData()
 {
 	if (FileExist(saveName) == 1) { // если мы нашли данные
 		cout << "Найден файл сохранения" << endl;
@@ -96,9 +103,13 @@ int LoadData() {
 		return 0;
 	}
 
-	deposid loadClient = { 0, NULL, NULL, 0 };
+	deposid loadClient;
+	fio clientFIO;
+	regDate registerDate;
+	int loadClientsCount = 0;
 
 	while (!feof(file)) {
+		loadClient = { 0, { NULL, NULL }, { 1, NULL, 2000 }, 0 };
 		fgets(buf, 255, file);
 		char *loadData = strtok(buf, "_");
 		int dataType = 0;
@@ -108,37 +119,35 @@ int LoadData() {
 			{
 			case 1: // UID
 				loadClient.id = strtol(loadData, NULL, 0);
-				cout << loadClient.id << endl;
+				//cout << loadClient.id << endl;
 				break;
 			case 2: // Name
-				loadClient.userFIO.name = (char*)malloc((strlen(loadData) + 1) * sizeof(char));
-				loadClient.userFIO.name[(strlen(buf) + 1)] = '\0';
-				loadClient.userFIO.name = loadData;
-				cout << loadClient.userFIO.name << endl;
+				loadClient.userFIO.name = (char*)malloc((strlen(loadData) + 1) * sizeof(char)); // освобождение памяти для переменной
+				strcpy(loadClient.userFIO.name, loadData); // копирование данных в элемент структуры
+				loadClient.userFIO.name[(strlen(loadData) + 1)] = '\0';
+				//cout << loadClient.userFIO.name << endl;
 				break;
 			case 3: // Surname
-				loadClient.userFIO.surname = (char*)malloc((strlen(loadData) + 1) * sizeof(char));
-				loadClient.userFIO.surname[(strlen(buf) + 1)] = '\0';
-				loadClient.userFIO.surname = loadData;
-				cout << loadClient.userFIO.surname << endl;
+				loadClient.userFIO.surname = (char*)malloc((strlen(loadData) + 1) * sizeof(char)); // освобождение памяти для переменной
+				strcpy(loadClient.userFIO.surname, loadData); // копирование данных в элемент структуры
+				loadClient.userFIO.surname[(strlen(loadData) + 1)] = '\0';
+				//cout << loadClient.userFIO.surname << endl;
 				break;
 			case 4: // Money
 				loadClient.amount = (double)strtol(loadData, NULL, 0);
-				cout << loadClient.amount << endl;
+				//cout << loadClient.amount << endl;
 				break;
 			case 5: // Day
 				loadClient.registerDate.day = (double)strtol(loadData, NULL, 0);
-				cout << loadClient.registerDate.day << endl;
 				break;
 			case 6: // Month
-				loadClient.registerDate.month = (char*)malloc((strlen(loadData) + 1) * sizeof(char));
-				loadClient.registerDate.month[(strlen(buf) + 1)] = '\0';
-				loadClient.registerDate.month = loadData;
-				cout << loadClient.registerDate.month << endl;
+				loadClient.registerDate.month = (char*)malloc((strlen(loadData) + 1) * sizeof(char)); // освобождение памяти для переменной
+				strcpy(loadClient.registerDate.month, loadData); // копирование данных в элемент структуры
+				loadClient.registerDate.month[(strlen(loadData) + 1)] = '\0';
 				break;
 			case 7: // Year
 				loadClient.registerDate.year = (double)strtol(loadData, NULL, 0);
-				cout << loadClient.registerDate.year << endl;
+				//cout << loadClient.registerDate.year << endl;
 				break;
 			}
 
@@ -149,12 +158,14 @@ int LoadData() {
 		if (loadClient.id != 0) {
 
 			AddClientToList(loadClient);
-			loadClient = { 0, NULL, NULL, 0 };
+			loadClientsCount++;
 		}
 	} // file ENDs
-
+	free(loadClient.userFIO.name);
+	free(loadClient.userFIO.surname);
+	free(loadClient.registerDate.month);
 	fclose(file);
-	cout << "1" << clients[clientsCount - 1].userFIO.name << endl;
+	printf_s("%d %s", loadClientsCount, " клиента было загружено...\n");
 	return 1;
 }
 
@@ -176,7 +187,9 @@ void SaveData() {
 	fclose(file);
 }
 
+// функция отображающая поступающий список клиентов
 void ShowClientsList(struct deposid* clientsList, int listCount, bool freeListAfterUse = true) {
+
 	// вывод таблицы клиентов
 	int tableWidth = 81;
 	cout << setfill('-') << setw(tableWidth) << "-" << setfill(' ') << endl;
@@ -187,9 +200,9 @@ void ShowClientsList(struct deposid* clientsList, int listCount, bool freeListAf
 	cout << setprecision(2);
 	int i;
 	for (i = 0; i < listCount; i++) {
-		char date[50];
-		sprintf(date, "%d %s %d", clientsList[i].registerDate.day, clientsList[i].registerDate.month, clientsList[i].registerDate.year);
-		cout << setw(6) << clientNum << setw(10) << clientsList[i].id << setw(15) << clientsList[i].userFIO.name << setw(15) << clientsList[i].userFIO.surname << setw(15) << clientsList[i].amount << setw(20) << date << endl;
+		char registrationDate[50];
+		sprintf(registrationDate, "%d %s %d", clientsList[i].registerDate.day, clientsList[i].registerDate.month, clientsList[i].registerDate.year);
+		cout << setw(6) << clientNum << setw(10) << clientsList[i].id << setw(15) << clientsList[i].userFIO.name << setw(15) << clientsList[i].userFIO.surname << setw(15) << clientsList[i].amount << setw(20) << registrationDate << endl;
 		clientNum++;
 	}
 	cout << setfill('-') << setw(tableWidth) << "-" << setfill(' ') << endl;
@@ -275,10 +288,72 @@ void CreateStandartClients() {
 
 }
 
-// при закрытии программы
-void ApplicationExit() {
-	SaveData();
-	free(clients); // освобождаем память
+// преобразовываем месяц в текстовый формат
+char* GetMonthString(char* buf, int month) {
+	switch (month)
+	{
+	case 1: {
+		char monthText[] = { "January" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 2: {
+		char monthText[] = { "February" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 3: {
+		char monthText[] = { "March" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 4: {
+		char monthText[] = { "April" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 5: {
+		char monthText[] = { "May" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 6: {
+		char monthText[] = { "June" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 7: {
+		char monthText[] = { "July" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 8: {
+		char monthText[] = { "August" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 9: {
+		char monthText[] = { "September" };
+		strcpy(buf, monthText);
+	}
+		  break;
+	case 10: {
+		char monthText[] = { "October" };
+		strcpy(buf, monthText);
+	}
+		   break;
+	case 11: {
+		char monthText[] = { "November" };
+		strcpy(buf, monthText);
+	}
+		   break;
+	case 12: {
+		char monthText[] = { "December" };
+		strcpy(buf, monthText);
+	}
+		   break;
+	}
+	return NULL;
 }
 
 // добавление нового пользователя
@@ -303,7 +378,12 @@ void AddNewClient() {
 		newClient.userFIO.surname[(strlen(buf) + 1)] = '\0';
 
 		cout << "Введите начальный счет на депозите:";
-		cin >> newClient.amount;
+
+		do
+		{
+			gets_s(buf); // Ввод в буфер
+			newClient.amount = strtol(buf, NULL, 0);
+		} while (strtol(buf, NULL, 0) == 0);
 
 		cout << "Введите дату создания депозита" << endl;
 
@@ -319,95 +399,14 @@ void AddNewClient() {
 		} while (month < 1 || month > 12);
 		
 		// преобразовываем месяц в текстовый формат
-		switch (month)
-		{
-		case 1: {
-			char monthText[] = { "January" };
-			cout << (strlen(monthText) + 1);
-			newClient.registerDate.month = (char*)malloc((strlen(monthText)+2) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 2: {
-			char monthText[] = { "February" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 3: {
-			char monthText[] = { "March" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 4: {
-			char monthText[] = { "April" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			break;
-		case 5: {
-			char monthText[] = { "May" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 6: {
-			char monthText[] = { "June" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 7: {
-			char monthText[] = { "July" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 8: {
-			char monthText[] = { "August" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 9: {
-			char monthText[] = { "September" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			  break;
-		case 10: {
-			char monthText[] = { "October" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			   break;
-		case 11: {
-			char monthText[] = { "November" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			   break;
-		case 12: {
-			char monthText[] = { "December" };
-			newClient.registerDate.month = (char*)malloc((strlen(monthText) + 1) * sizeof(char));
-			strcpy(newClient.registerDate.month, monthText);
-			newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
-		}
-			   break;
-		}
+		char monthText[255];
+		GetMonthString(monthText, month);
+		cout << (strlen(monthText) + 1);
+		newClient.registerDate.month = (char*)malloc((strlen(monthText) + 2) * sizeof(char));
+		strcpy(newClient.registerDate.month, monthText);
+		newClient.registerDate.month[(strlen(monthText) + 1)] = '\0';
 		
+
 		do {
 			cout << "Год: ";
 			cin >> newClient.registerDate.year;
@@ -466,18 +465,14 @@ void AddNewClient() {
 	}
 }
 
+// добавление клиента в базу данных
 void AddClientToList(deposid client) {
 	clientsCount++;
 	clients = (deposid*)realloc(clients, clientsCount * sizeof(deposid));
 	clients[clientsCount - 1] = client;
 }
 
-void Some() {
-
-	cout << "CHECK" << endl;
-	cout << clients[1].userFIO.name << endl;
-}
-
+// сохранение в файл (старое)
 void WriteDataToFile() {
 	// Создание/открытие файла "examples.txt"
 	// Можно было использовать метод fopen
@@ -505,10 +500,12 @@ void WriteDataToFile() {
 	fclose(file);
 }
 
+// отображение базы данных
 void ShowAllClientsList() {
 	ShowClientsList(clients, clientsCount, false);
 }
 
+// клиенты со счетом больше чем (...)
 void ShowClientsListMoreMoneyThen(int minValue) {
 	int listCount = 0;
 	deposid* clientsList = (deposid*)malloc(listCount * sizeof(deposid));
@@ -523,6 +520,7 @@ void ShowClientsListMoreMoneyThen(int minValue) {
 	ShowClientsList(clientsList, listCount);
 }
 
+// поиск по ФИО
 void SearchClientsDeposits() {
 	// Поиск счетов по имени и фамилии
 	char buf[256];
@@ -554,65 +552,115 @@ void SearchClientsDeposits() {
 	ShowClientsList(clientsList, listCount);
 }
 
-/*
-
-// Загружаем данные
-int LoadData() {
-	char symbol = ' ';
-	int dataLine = 0;
-	int dataWord = 0;
-	int dataLetter = 0;
-	FILE* file = fopen(saveName, "r");
-
-	if (file == NULL) {
-
-		return 0;
-	}
-
-	deposid loadClient = { 0, NULL, NULL, 0 };
-	char* loadData = (char*)malloc(0 * sizeof(char));
-
-	do
-	{
-		symbol = fgetc(file);
-
-		if (symbol == ';') {
-			dataLine++; // переходим к строчке следующего пользователя
-			AddClientToList(loadClient);
-			// запись нового пользователя
-			loadClient = { 0, NULL, NULL, 0 };
-			dataWord = 0; // запись начальных данных
-			continue;
-		}
-		if (symbol == '_') {
-			for (int i = 0; i < dataLetter; i++) {
-
-			}
-
-			switch (dataWord) {
-			case 1:
-
-				cout << "DATA: " << loadData << endl;
-				loadClient.id = strtol(loadData, NULL, 10);
-				cout << "DATA: " << loadClient.id << endl;
-				break;
-			}
-
-			free(loadData);
-			dataWord++;
-		}
-		else {
-			dataLetter++;
-			loadData = (char*)malloc(dataLetter * sizeof(char));
-
-		}
-
-	} while (symbol != EOF); // пока не конец файла
-
-	cout << endl << dataLine << endl;
-	fclose(file);
-	cout <<  endl;
-	return 1;
+// удаление данных пользователей
+void ClearClients() {
+	free(clients);
 }
 
+// добавление элемента в произвольный список
+deposid* ListAdd(deposid* list, int &listCount, deposid &add) {
+
+	listCount++;
+	list = (deposid*)realloc(list, listCount * sizeof(deposid));
+	list[listCount - 1] = add;
+	return list;
+}
+
+// поиск клиента со счетом открытым позже (...)
+void FindClientRegLater() {
+	char buf[255];
+	regDate minRegDate = { 0, NULL, 0 };
+
+	do {
+		cout << "День: ";
+		cin >> minRegDate.day;
+	} while (minRegDate.day < 1 || minRegDate.day > 31);
+
+	int month = 0;
+	do {
+		cout << "Месяц: ";
+		cin >> month;
+	} while (month < 1 || month > 12);
+
+	do {
+		cout << "Год: ";
+		cin >> minRegDate.year;
+	} while (minRegDate.year < 2000 || minRegDate.year > 2022);
+	cin.clear(); // на случай, если предыдущий ввод завершился с ошибкой
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	int clientsListCount = 0;
+	deposid* clientsList = (deposid*)malloc(sizeof(deposid) * 0);
+	int i = 0;
+	for (i; i < clientsCount; i++) {
+		// year check
+		if (clients[i].registerDate.year > minRegDate.year) {
+			clientsList = ListAdd(clientsList, clientsListCount, clients[i]);
+		}
+		else if (clients[i].registerDate.year == minRegDate.year) {
+			// month check
+			if (GetMonthNumber(clients[i].registerDate.month) > month) {
+				clientsList = ListAdd(clientsList, clientsListCount, clients[i]);
+			}
+			else if(GetMonthNumber(clients[i].registerDate.month) == month) {
+				// day check
+				if (clients[i].registerDate.day > minRegDate.day) {
+					clientsList = ListAdd(clientsList, clientsListCount, clients[i]);
+				}
+			}
+		}
+	}
+	ShowClientsList(clientsList, clientsListCount);
+}
+
+// форматируем месяц из строки в число
+int GetMonthNumber(char* month) {
+	if (strcmp(month, "January") == 0) { return 1; }
+	if (strcmp(month, "February") == 0) { return 2; }
+	if (strcmp(month, "March") == 0) { return 3; }
+	if (strcmp(month, "April") == 0) { return 4; }
+	if (strcmp(month, "May") == 0) { return 5; }
+	if (strcmp(month, "June") == 0) { return 6; }
+	if (strcmp(month, "July") == 0) { return 7; }
+	if (strcmp(month, "August") == 0) { return 8; }
+	if (strcmp(month, "September") == 0) { return 9; }
+	if (strcmp(month, "Octouber") == 0) { return 10; }
+	if (strcmp(month, "November") == 0) { return 11; }
+	if (strcmp(month, "December") == 0) { return 12; }
+
+	return -1;
+}
+
+// при открытии программы
+void ApplicationOpen() {
+	CheckSavedData();
+}
+
+// при закрытии программы
+void ApplicationExit() {
+	SaveData(); // сохраняем данные
+	ClearClients(); // освобождаем память
+}
+
+/*
+for (i; i < clientsCount; i++) {
+		cout << endl << "User: " << i << endl;
+		if (clients[i].registerDate.year < minRegDate.year) {
+			continue;
+		}
+		cout << "Year: yes " << i << endl;
+		if (GetMonthNumber(clients[i].registerDate.month) < month) {
+			cout << endl << "User m: " << GetMonthNumber(clients[i].registerDate.month) << "need: " << month << endl;
+			continue;
+		}
+		cout << "Month: yes " << i << endl;
+		if (clients[i].registerDate.day <= minRegDate.day) {
+			continue;
+		}
+		cout << "Day: yes " << i << endl;
+		clientsListCount++;
+		clientsList = (deposid*)realloc(clientsList, clientsListCount * sizeof(deposid));
+		clientsList[clientsListCount - 1] = clients[i];
+	}
+	ShowClientsList(clientsList, clientsListCount);
 */

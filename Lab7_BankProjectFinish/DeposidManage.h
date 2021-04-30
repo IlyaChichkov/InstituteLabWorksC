@@ -1,4 +1,18 @@
 #pragma once
+
+// Фамилия Имя
+typedef struct fio {
+	char* surname;
+	char* name;
+} fio;
+
+// Дата
+typedef struct date {
+	int day;
+	char* month;
+	int year;
+} regDate;
+
 typedef struct deposid {
 	int id;
 	char* surname;
@@ -13,5 +27,7 @@ void CreateStandartClients();
 void WriteDataToFile();
 void ApplicationExit();
 int LoadData();
-void DataFileExist();
-void Some();
+void SaveData();
+void CheckSavedData();
+void ApplicationOpen();
+void FindClientRegLater();

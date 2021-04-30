@@ -60,6 +60,7 @@ int MainMenu() {
 			WriteDataToFile();
 			break;
 		case 7:
+			SetConsoleTextAttribute(hConsole1, 7);
 			return 0;
 			break;
 		}
